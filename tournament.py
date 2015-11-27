@@ -3,7 +3,7 @@
 # tournament.py -- implementation of a Swiss-system tournament
 #
 
-import psycopg2, random
+import psycopg2, random, math
 VERBOSE = True
 
 
@@ -57,7 +57,7 @@ def registerPlayer(name):
     c.execute("INSERT INTO PLAYERS (name) VALUES (%s)", (name,))
     conn.commit() 
     if VERBOSE:
-        print "player %s has been added" % name
+        print "Player %s has been added" % name
     conn.close()
 
 def playerStandings():
@@ -79,8 +79,11 @@ def playerStandings():
     result =  c.fetchall()
     conn.close()
     if VERBOSE:
+        print"---------------------------------"
+        print "id | Name | Win | Loss"
+        print"---------------------------------"
         for row in result:
-            print row[1], row[0], row[2], row[3] 
+            print row[0], row[1], row[2], row[3] 
     print "\n"
     return result
 
@@ -96,7 +99,7 @@ def reportMatch(winner, loser):
     c.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s)", (winner, loser,))
     conn.commit()
     if VERBOSE:
-        print "player %s wins a match with player %s" % (winner, loser)
+        print "Player %s wins a match with player %s" % (winner, loser)
     conn.close()
  
 def swissPairings():
@@ -134,5 +137,34 @@ def randomTournament():
     return 0
 
 def registerPlayers(players):
-    for row in players:
-        registerPlayer(row[0])
+    for player in players:
+        registerPlayer(player)
+        
+def newPairings():
+    standings = playerStandings()
+    result=[]
+    while (len(standings) > 0):
+        i=0
+        a = standings[i]
+        standings.pop(i)
+        b = standings[i]
+        while (dupeyes(a,b)):
+            i = i + 1
+            b = standings[i]
+        standings.pop(i)
+        result.append(a[0:2]+b[0:2])
+    return result
+
+def dupeyes(a,b):
+    conn = connect()
+    c = conn.cursor()
+    c.execute("select * from matches where (winner = %s and loser = %s) or (winner = %s and loser = %s)",(a[0],b[0],b[0],a[0]))
+    conn.commit()
+    conn.close()
+    if c.rowcount == 0:
+        return 0
+    else:
+        print "*** Player %s had previous match with %s ***" % (a[0], b[0])
+        return 1
+        
+        

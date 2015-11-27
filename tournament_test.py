@@ -127,24 +127,15 @@ def testPairings():
 def testExtraCredit1():
     print "\n"
     truncateTables()
-    players = ["Abraham Lincoln","Benjamin Flanklin","Bruno Walton","Boots O'Nea","Cathy Burton","Twilight Sparkle","Fluttershy","Fluttershy"]
+    players = ("Abraham Lincoln","Benjamin Flanklin","Bruno Walton","Boots O'Nea","Cathy Burton","Twilight Sparkle","Fluttershy","Pinkie Pie","Janet Jackson","Michael Jackson")
     registerPlayers(players)
-    print "\n"
-    pairings = swissPairings()
-    print pairings
-    for pair in pairings:
-        kk = tuple(random.sample((pair[0],pair[2]),2))
-        reportMatch(kk[0],kk[1])
-    pairings = swissPairings()
-    print pairings
-    for pair in pairings:
-        kk = tuple(random.sample((pair[0],pair[2]),2))
-        reportMatch(kk[0],kk[1])
-    pairings = swissPairings()
-    print pairings
-    for pair in pairings:
-        kk = tuple(random.sample((pair[0],pair[2]),2))
-        reportMatch(kk[0],kk[1])
+    rounds = int(math.log(len(players),2))
+    for x in range(0, rounds):
+        standings = playerStandings()
+        pairings = newPairings()
+        for pair in pairings:
+            kk = tuple(random.sample((pair[0],pair[2]),2))
+            reportMatch(kk[0],kk[1])
     standings = playerStandings()
     
 if __name__ == '__main__':
