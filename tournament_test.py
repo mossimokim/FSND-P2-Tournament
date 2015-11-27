@@ -124,16 +124,39 @@ def testPairings():
             "After one match, players with one win should be paired.")
     print "8. After one match, players with one win are paired."
     
+def testExtraCredit1():
+    print "\n"
+    truncateTables()
+    players = ["Abraham Lincoln","Benjamin Flanklin","Bruno Walton","Boots O'Nea","Cathy Burton","Twilight Sparkle","Fluttershy","Fluttershy"]
+    registerPlayers(players)
+    print "\n"
+    pairings = swissPairings()
+    print pairings
+    for pair in pairings:
+        kk = tuple(random.sample((pair[0],pair[2]),2))
+        reportMatch(kk[0],kk[1])
+    pairings = swissPairings()
+    print pairings
+    for pair in pairings:
+        kk = tuple(random.sample((pair[0],pair[2]),2))
+        reportMatch(kk[0],kk[1])
+    pairings = swissPairings()
+    print pairings
+    for pair in pairings:
+        kk = tuple(random.sample((pair[0],pair[2]),2))
+        reportMatch(kk[0],kk[1])
+    standings = playerStandings()
     
 if __name__ == '__main__':
-    testDeleteMatches()
-    testDelete()
-    testCount()
-    testRegister()
-    testRegisterCountDelete()
-    testStandingsBeforeMatches()
-    testReportMatches()
-    testPairings()
+    # testDeleteMatches()
+    # testDelete()
+    # testCount()
+    # testRegister()
+    # testRegisterCountDelete()
+    # testStandingsBeforeMatches()
+    # testReportMatches()
+    # testPairings()
+    testExtraCredit1()
     print "Success!  All tests pass!"
 
 

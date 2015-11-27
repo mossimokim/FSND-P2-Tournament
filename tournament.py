@@ -3,7 +3,8 @@
 # tournament.py -- implementation of a Swiss-system tournament
 #
 
-import psycopg2
+import psycopg2, random
+VERBOSE = True
 
 
 def connect():
@@ -17,6 +18,8 @@ def deleteMatches():
     c = conn.cursor()
     c.execute("DELETE FROM MATCHES")
     conn.commit() 
+    if VERBOSE:
+        print "all match records are deleted!"
     conn.close()
 
 def deletePlayers():
@@ -24,7 +27,9 @@ def deletePlayers():
     conn = connect()
     c = conn.cursor()
     c.execute("DELETE FROM PLAYERS")
-    conn.commit() 
+    conn.commit()
+    if VERBOSE:
+        print "all player records are deleted!"
     conn.close()
 
 def countPlayers():
@@ -51,6 +56,8 @@ def registerPlayer(name):
     c = conn.cursor()
     c.execute("INSERT INTO PLAYERS (name) VALUES (%s)", (name,))
     conn.commit() 
+    if VERBOSE:
+        print "player %s has been added" % name
     conn.close()
 
 def playerStandings():
@@ -71,6 +78,10 @@ def playerStandings():
     c.execute("SELECT * FROM standings ORDER BY win DESC")
     result =  c.fetchall()
     conn.close()
+    if VERBOSE:
+        for row in result:
+            print row[1], row[0], row[2], row[3] 
+    print "\n"
     return result
 
 def reportMatch(winner, loser):
@@ -83,7 +94,9 @@ def reportMatch(winner, loser):
     conn = connect()
     c = conn.cursor()
     c.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s)", (winner, loser,))
-    conn.commit() 
+    conn.commit()
+    if VERBOSE:
+        print "player %s wins a match with player %s" % (winner, loser)
     conn.close()
  
 def swissPairings():
@@ -107,4 +120,19 @@ def swissPairings():
         result.append(standings[i][0:2]+standings[i+1][0:2])
     return result
     
+def truncateTables():
+    """Remove all the player records from the database."""
+    conn = connect()
+    c = conn.cursor()
+    c.execute("TRUNCATE MATCHES, PLAYERS RESTART IDENTITY")
+    conn.commit()
+    if VERBOSE:
+        print "tabe matches, players are trancated\n"
+    conn.close()
+    
+def randomTournament():
+    return 0
 
+def registerPlayers(players):
+    for row in players:
+        registerPlayer(row[0])
